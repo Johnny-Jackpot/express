@@ -1,4 +1,4 @@
-import { Request, Response, type NextFunction } from "express";
+import type {  Request, Response, NextFunction } from "express";
 import { logger } from "../lib/logger.js";
 
 export function errorHandler(
