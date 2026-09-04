@@ -1,5 +1,5 @@
 CREATE TABLE support_tasks (
-  id UUID PRIMARY KEY DEFAULT get_random_uuid(),
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
 
   title VARCHAR(150) NOT NULL,
 
@@ -10,4 +10,4 @@ CREATE TABLE support_tasks (
   
   created_at TIMESTAMP NOT NULL DEFAULT NOW(),
   updated_at TIMESTAMP NOT NULL DEFAULT NOW()
-)
+);
