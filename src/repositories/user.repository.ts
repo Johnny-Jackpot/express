@@ -1,4 +1,4 @@
-import type {DBUserRow, User} from "../types/user.js";
+import type {DBUserRow, DBUserWithPasswordRow, User} from "../types/user.js";
 import {pool} from "../lib/db.js";
 import {AppError} from "../errors/AppError.js";
 
@@ -27,4 +27,15 @@ export async function createUser(email: string, passwordHash: string): Promise<U
   }
 
   return user as User;
+}
+
+export async function findUserByEmailWithPassword(
+  email: string
+): Promise<DBUserWithPasswordRow|null> {
+  const result = await pool.query<DBUserWithPasswordRow>(
+    `SELECT id, email, role, password_hash, created_at
+    FROM users WHERE email = $1`, [email]
+  )
+
+  return result.rows[0] ?? null
 }
