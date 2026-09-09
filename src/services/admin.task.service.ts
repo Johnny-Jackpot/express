@@ -1,6 +1,6 @@
 import type {Task} from "../types/task.js";
 import {AppError} from "../errors/AppError.js";
-import {findAllTasks} from "../repositories/admin.task.repository.js";
+import {findAllTasks, updateTaskStatus} from "../repositories/admin.task.repository.js";
 
 type AdminTaskListQuery = {
   search?: string;
@@ -28,4 +28,20 @@ export async function getAdminTasks(
   const tasks = await findAllTasks({search, status});
 
   return {tasks};
+}
+
+export async function updateAdminTaskStatus(
+  taskId: string,
+  status: unknown,
+): Promise<Task> {
+  if (typeof status !== 'string' || !TASK_STATUSES.includes(status as TaskStatus)) {
+    throw new AppError(400,`Status must be one of: ${TASK_STATUSES.join(', ')}`);
+  }
+
+  const task = await updateTaskStatus(taskId, status);
+  if (!task) {
+    throw new AppError(404, 'Task not found');
+  }
+
+  return task;
 }
