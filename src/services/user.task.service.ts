@@ -1,6 +1,6 @@
 import type {Task} from "../types/task.js";
 import {AppError} from "../errors/AppError.js";
-import {createTask, fetchTasksByUserId, findTaskByIdAndUserId, updateTaskTitle} from "../repositories/user.task.repository.js";
+import {createTask, deleteTask, fetchTasksByUserId, findTaskByIdAndUserId, updateTaskTitle} from "../repositories/user.task.repository.js";
 
 function validateTitle(title: unknown): string {
   if (typeof title !== 'string' || !title.trim()) {
@@ -51,4 +51,11 @@ export async function updateUserTask(
   }
 
   return task;
+}
+
+export async function deleteUserTask(taskId: string, userId: string): Promise<void> {
+  const deleted = await deleteTask(taskId, userId)
+  if (!deleted) {
+    throw new AppError(404, 'Task not found');
+  }
 }
