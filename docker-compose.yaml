@@ -4,7 +4,7 @@ services:
   postgres:
     image: postgres:18-alpine
     container_name: express_app_postgres_db
-    restart: always
+    restart: unless-stopped
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
@@ -16,10 +16,20 @@ services:
     networks:
       - db_network
 
+  redis:
+    image: redis:7-alpine
+    container_name: express_app_redis_db
+    restart: unless-stopped
+    ports:
+      - "6380:6379"
+    volumes:
+      - redis_data:/data
+
+
   pgadmin:
     image: dpage/pgadmin4:latest
     container_name: pgadmin_ui
-    restart: always
+    restart: unless-stopped
     environment:
       PGADMIN_DEFAULT_EMAIL: admin@admin.com
       PGADMIN_DEFAULT_PASSWORD: adminpassword
@@ -35,6 +45,7 @@ services:
 volumes:
   postgres_data:
   pgadmin_data:
+  redis_data:
 
 networks:
   db_network:
