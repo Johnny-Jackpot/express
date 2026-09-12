@@ -19,5 +19,6 @@ export const env = {
   databaseUrl: getRequiredEnvVariable('DATABASE_URL'),
   jwtAccessSecret: getRequiredEnvVariable('JWT_SECRET'),
   jwtAccessExpiresIn: getRequiredEnvVariable('JWT_ACCESS_EXPIRES_IN'),
+  redisUrl: getRequiredEnvVariable("REDIS_URL"),
 } as const;
 
