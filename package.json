@@ -13,7 +13,7 @@
     "docker:up": "docker-compose up -d",
     "docker:down": "docker-compose down",
     "migrate": "tsx src/scripts/migrate.ts",
-    "example:redis-types": "tsx examples/redis-data-types.ts"
+    "example:redis-types": "tsx watch examples/redis-data-types.ts"
   },
   "dependencies": {
     "bcryptjs": "^3.0.3",
