@@ -1,6 +1,7 @@
 import type {Task} from "../types/task.js";
 import {AppError} from "../errors/AppError.js";
 import {createTask, deleteTask, fetchTasksByUserId, findTaskByIdAndUserId, updateTaskTitle} from "../repositories/user.task.repository.js";
+import {getFromCacheOrFetch, invalidateCache} from "./cache.js";
 
 function validateTitle(title: unknown): string {
   if (typeof title !== 'string' || !title.trim()) {
@@ -17,21 +18,39 @@ function validateTitle(title: unknown): string {
   return trimmedTitle;
 }
 
+const USER_TASKS_CACHE_TIME = 60 * 60; //1 hour
+const getUserTasksCacheKey = (userId: string): string => `user_tasks:${userId}`;
+const getUserTaskCacheKey = (taskId: string, userId: string): string => `user_task:${userId}:${taskId}`;
+
 export async function createUserTask(userId: string, title: unknown): Promise<Task> {
   const validTitle = validateTitle(title);
 
-  return createTask(userId, validTitle);
+  const task = await createTask(userId, validTitle);
+
+  await invalidateCache(getUserTasksCacheKey(userId));
+
+  return task;
 }
 
 export async function getUserTasks(userId: string): Promise<Task[]> {
-  return fetchTasksByUserId(userId)
+  const cacheKey = getUserTasksCacheKey(userId);
+  return getFromCacheOrFetch<Task[]>({
+    fetch: () => fetchTasksByUserId(userId),
+    cacheKey,
+    ttl: USER_TASKS_CACHE_TIME,
+  });
 }
 
 export async function getUserTaskById(
   taskId: string,
   userId: string,
 ): Promise<Task> {
-  const task = await findTaskByIdAndUserId(taskId, userId);
+  const cacheKey = getUserTaskCacheKey(taskId, userId);
+  const task = await getFromCacheOrFetch<Task|null>({
+    fetch: () => findTaskByIdAndUserId(taskId, userId),
+    cacheKey,
+    ttl: USER_TASKS_CACHE_TIME,
+  })
   if (!task) {
     throw new AppError(404, 'Task not found');
   }
@@ -50,6 +69,8 @@ export async function updateUserTask(
     throw new AppError(404, 'Task not found');
   }
 
+  await invalidateCache(getUserTaskCacheKey(taskId, userId))
+
   return task;
 }
 
@@ -58,4 +79,6 @@ export async function deleteUserTask(taskId: string, userId: string): Promise<vo
   if (!deleted) {
     throw new AppError(404, 'Task not found');
   }
+
+  await invalidateCache(getUserTasksCacheKey(userId));
 }
