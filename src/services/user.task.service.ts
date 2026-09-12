@@ -69,9 +69,9 @@ export async function updateUserTask(
     throw new AppError(404, 'Task not found');
   }
 
-  await Promise.all([
-    invalidateCache(getUserTasksCacheKey(userId)),
-    invalidateCache(getUserTaskCacheKey(taskId, userId)),
+  await invalidateCache([
+    getUserTasksCacheKey(userId),
+    getUserTaskCacheKey(taskId, userId)
   ])
 
   return task;
@@ -83,8 +83,8 @@ export async function deleteUserTask(taskId: string, userId: string): Promise<vo
     throw new AppError(404, 'Task not found');
   }
 
-  await Promise.all([
-    invalidateCache(getUserTasksCacheKey(userId)),
-    invalidateCache(getUserTaskCacheKey(taskId, userId)),
-  ])
+  await invalidateCache([
+    getUserTasksCacheKey(userId),
+    getUserTaskCacheKey(taskId, userId)
+  ]);
 }

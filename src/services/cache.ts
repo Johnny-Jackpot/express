@@ -35,6 +35,9 @@ export async function getFromCacheOrFetch<T>(
   return data as T;
 }
 
-export async function invalidateCache(cacheKey: string): Promise<void> {
+export async function invalidateCache(cacheKey: string | string[]): Promise<void> {
+  if (Array.isArray(cacheKey) && cacheKey.length === 0) {
+    return;
+  }
   await redis.del(cacheKey);
 }
