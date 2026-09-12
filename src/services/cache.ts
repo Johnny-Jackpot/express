@@ -4,20 +4,33 @@ import {logger} from "../lib/logger.js";
 type CacheOptions<T> = {
   cacheKey: string,
   fetch: () => Promise<T>,
-  ttl: number
+  ttl: number,
+  negativeTtl?: number,
 }
 
-export async function getFromCacheOrFetch<T>({cacheKey, fetch, ttl}: CacheOptions<T>): Promise<T> {
+const DEFAULT_NEGATIVE_TTL = 60; // 1 minute
+
+export async function getFromCacheOrFetch<T>(
+  {cacheKey, fetch, ttl, negativeTtl = DEFAULT_NEGATIVE_TTL}: CacheOptions<T>
+): Promise<T> {
   const cachedData = await redis.get(cacheKey);
-  if (cachedData) {
-    logger.info(`cache hit: "${cacheKey}"`);
-    return JSON.parse(cachedData) as T;
+  if (cachedData !== null) {
+    const parsed = JSON.parse(cachedData) as T;
+    logger.info(
+      `cache ${parsed === null || parsed === undefined ? 'negative hit' : 'hit'}: "${cacheKey}"`
+    );
+    return parsed;
   }
 
   logger.info(`cache miss: "${cacheKey}"`);
 
   const data = await fetch();
-  await redis.setEx(cacheKey, ttl, JSON.stringify(data));
+  if (data === null || data === undefined) {
+    logger.info(`cache negative set: "${cacheKey}" (ttl=${negativeTtl}s)`);
+  }
+
+  const effectiveTtl = data === null || data === undefined ? negativeTtl : ttl;
+  await redis.setEx(cacheKey, effectiveTtl, JSON.stringify(data));
 
   return data as T;
 }
