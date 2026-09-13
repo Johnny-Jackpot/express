@@ -3,10 +3,11 @@ import {Router} from "express";
 import {authenticate} from "../middlewares/auth.middleware.js";
 import {createUserTask, deleteUserTask, getUserTaskById, getUserTasks, updateUserTask} from "../services/user.task.service.js";
 import {AppError} from "../errors/AppError.js";
+import {userTaskRateLimiter} from "../middlewares/rateLimit.middleware.js";
 
 export const userTaskRouter = Router();
 
-userTaskRouter.use(authenticate);
+userTaskRouter.use(authenticate, userTaskRateLimiter);
 
 userTaskRouter.post("/", async (req: Request, res: Response, next: NextFunction): Promise<void> => {
   try {
