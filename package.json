@@ -14,7 +14,8 @@
     "docker:down": "docker-compose down",
     "migrate": "tsx src/scripts/migrate.ts",
     "example:redis-types": "tsx watch examples/redis-data-types.ts",
-    "example:redis-pub-sub": "tsx watch examples/redis-pub-sub.ts"
+    "example:redis-pub-sub": "tsx watch examples/redis-pub-sub.ts",
+    "run:notifications:subscriber": "tsx watch src/notifications.ts"
   },
   "dependencies": {
     "bcryptjs": "^3.0.3",

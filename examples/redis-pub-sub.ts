@@ -1,8 +1,4 @@
-import dotenv from "dotenv";
 import {redis} from "../src/lib/redis.js";
-
-dotenv.config();
-
 
 const channel = 'demo:notifications';
 
