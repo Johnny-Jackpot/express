@@ -7,8 +7,7 @@ export function requireAdmin(
   next: NextFunction
 ): void {
   if (req.user?.role !== "ADMIN") {
-    next(new AppError(403, "Admin access required"))
-    return;
+    throw new AppError(403, "Admin access required");
   }
 
   next();

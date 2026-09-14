@@ -1,11 +1,6 @@
-import type {  Request, Response } from "express";
+import type {Request, Response} from "express";
+import {fail} from "../lib/respond.js";
 
-export function notFound(
-  _req: Request, 
-  res: Response,
-): void {
-  res.status(404).json({
-    success: false,
-    message: 'Route not found'
-  })
+export function notFound(_req: Request, res: Response): void {
+  fail(res, 404, 'Route not found')
 }

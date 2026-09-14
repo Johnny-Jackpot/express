@@ -1,6 +1,7 @@
 import type {Request, Response, NextFunction} from "express";
 import {logger} from "../lib/logger.js";
 import {redis} from "../lib/redis.js";
+import {fail} from "../lib/respond.js";
 
 const RATE_LIMIT_WINDOW_SECONDS = 60;
 const RATE_LIMIT_MAX_REQUESTS = 5;
@@ -22,10 +23,7 @@ export async function userTaskRateLimiter(
     res.setHeader('X-RateLimit-Remaining', Math.max(0, RATE_LIMIT_MAX_REQUESTS - requestCount).toString());
 
     if (requestCount > RATE_LIMIT_MAX_REQUESTS) {
-      res.status(429).json({
-        success: false,
-        message: 'Too many requests, please try again later.'
-      });
+      fail(res, 429, 'Too many requests, please try again later.')
       return;
     }
 
