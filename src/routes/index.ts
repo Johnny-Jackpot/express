@@ -4,6 +4,7 @@ import {authRouter} from "./auth.routes.js";
 import {userTaskRouter} from "./user.task.routes.js";
 import {adminTaskRoutes} from "./admin.task.routes.js";
 import {notificationsRouter} from "./notification.routes.js";
+import {adminBannerRoutes} from "./admin.banners.routes.js";
 
 export const apiRouter = Router();
 
@@ -11,4 +12,5 @@ apiRouter.use(healthRouter);
 apiRouter.use('/auth', authRouter);
 apiRouter.use('/tasks', userTaskRouter);
 apiRouter.use('/admin/tasks', adminTaskRoutes);
+apiRouter.use('/admin/banners', adminBannerRoutes);
 apiRouter.use('/notifications', notificationsRouter);
