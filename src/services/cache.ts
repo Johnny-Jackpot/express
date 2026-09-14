@@ -4,14 +4,15 @@ import {logger} from "../lib/logger.js";
 type CacheOptions<T> = {
   cacheKey: string,
   fetch: () => Promise<T>,
-  ttl: number,
+  ttl?: number,
   negativeTtl?: number,
 }
 
+const DEFAULT_CACHE_TTL = 60 * 60; //1hour
 const DEFAULT_NEGATIVE_TTL = 60; // 1 minute
 
 export async function getFromCacheOrFetch<T>(
-  {cacheKey, fetch, ttl, negativeTtl = DEFAULT_NEGATIVE_TTL}: CacheOptions<T>
+  {cacheKey, fetch, ttl = DEFAULT_CACHE_TTL, negativeTtl = DEFAULT_NEGATIVE_TTL}: CacheOptions<T>
 ): Promise<T> {
   const cachedData = await redis.get(cacheKey);
   if (cachedData !== null) {

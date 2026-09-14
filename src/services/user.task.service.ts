@@ -18,7 +18,6 @@ function validateTitle(title: unknown): string {
   return trimmedTitle;
 }
 
-const USER_TASKS_CACHE_TIME = 60 * 60; //1 hour
 const getUserTasksCacheKey = (userId: string): string => `user_tasks:${userId}`;
 const getUserTaskCacheKey = (taskId: string, userId: string): string => `user_task:${userId}:${taskId}`;
 
@@ -37,7 +36,6 @@ export async function getUserTasks(userId: string): Promise<Task[]> {
   return getFromCacheOrFetch<Task[]>({
     fetch: () => fetchTasksByUserId(userId),
     cacheKey,
-    ttl: USER_TASKS_CACHE_TIME,
   });
 }
 
@@ -49,7 +47,6 @@ export async function getUserTaskById(
   const task = await getFromCacheOrFetch<Task|null>({
     fetch: () => findTaskByIdAndUserId(taskId, userId),
     cacheKey,
-    ttl: USER_TASKS_CACHE_TIME,
   })
   if (!task) {
     throw new AppError(404, 'Task not found');

@@ -8,10 +8,20 @@ export async function createAdminBanner(
   cloudinaryPublicId: string,
 ): Promise<Banner|null> {
   const result = await pool.query<BannerRow>(`
-    INSERT INTO banner (image_url, cloudinary_public_id)
+    INSERT INTO banners (image_url, cloudinary_public_id)
     VALUES ($1, $2)
     RETURNING id, image_url, cloudinary_public_id, created_at, updated_at
   `, [imageUrl, cloudinaryPublicId])
 
   return result.rows[0] ?? null;
+}
+
+export async function fetchAdminBanners(): Promise<Banner[]> {
+  const result = await pool.query<BannerRow>(`
+    SELECT id, image_url, cloudinary_public_id, created_at, updated_at 
+    FROM banners
+    ORDER BY created_at DESC
+  `)
+
+  return result.rows;
 }

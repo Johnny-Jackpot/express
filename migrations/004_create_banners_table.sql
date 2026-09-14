@@ -1,4 +1,4 @@
-CREATE TABLE banner (
+CREATE TABLE banners (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
 
   image_url TEXT NOT NULL,
