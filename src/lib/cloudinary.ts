@@ -6,16 +6,16 @@ type UploadResult = {
   publicId: string;
 }
 
-export async function uploadBannerImageToCloudinary(
+cloudinary.config({
+  cloud_name: env.cloudinaryCloudName,
+  api_key: env.cloudinaryApiKey,
+  api_secret: env.cloudinaryApiSecret,
+})
+
+export async function uploadImageToCloudinary(
   buffer: Buffer,
   options?: {folder?: string}
 ): Promise<UploadResult> {
-  cloudinary.config({
-    cloud_name: env.cloudinaryCloudName,
-    api_key: env.cloudinaryApiKey,
-    api_secret: env.cloudinaryApiSecret,
-  })
-
   return new Promise((resolve, reject) => {
     const uploadStream = cloudinary.uploader.upload_stream({
       resource_type: 'image',
@@ -34,4 +34,8 @@ export async function uploadBannerImageToCloudinary(
 
     uploadStream.end(buffer);
   })
+}
+
+export function deleteImageFromCloudinary(publicId: string): Promise<any> {
+  return cloudinary.uploader.destroy(publicId);
 }

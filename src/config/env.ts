@@ -25,3 +25,10 @@ export const env = {
   cloudinaryApiSecret: getRequiredEnvVariable("CLOUDINARY_API_SECRET"),
 } as const;
 
+const mqUrl = new URL(env.redisUrl);
+export const bullMQConnectionParams = {
+  host: mqUrl.hostname,
+  port: Number(mqUrl.port),
+  maxRetriesPerRequest: null,
+}
+

@@ -25,3 +25,11 @@ export async function fetchAdminBanners(): Promise<Banner[]> {
 
   return result.rows;
 }
+
+export async function deleteBannerById(bannerId: string): Promise<string|null> {
+  const result = await pool.query<{cloudinary_public_id: string}>(`
+    DELETE FROM banners WHERE id = $1 RETURNING cloudinary_public_id
+  `, [bannerId])
+
+  return result.rows[0]?.cloudinary_public_id ?? null;
+}
