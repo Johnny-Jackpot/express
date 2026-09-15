@@ -1,5 +1,5 @@
-import {redis} from "../lib/redis.js";
-import {logger} from "../lib/logger.js";
+import {redis} from "./redis.js";
+import {logger} from "./logger.js";
 
 type CacheOptions<T> = {
   cacheKey: string,

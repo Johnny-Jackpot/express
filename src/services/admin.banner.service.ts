@@ -2,7 +2,7 @@ import type {Banner} from "../types/banner.js";
 import {AppError} from "../errors/AppError.js";
 import {uploadBannerImageToCloudinary} from "../lib/cloudinary.js";
 import {createAdminBanner, fetchAdminBanners} from "../repositories/admin.banner.repository.js";
-import {getFromCacheOrFetch, invalidateCache} from "./cache.js";
+import {getFromCacheOrFetch, invalidateCache} from "../lib/cache.js";
 
 const CACHE_KEY = 'admin:banners';
 

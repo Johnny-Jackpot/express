@@ -1,7 +1,7 @@
 import type {Task} from "../types/task.js";
 import {AppError} from "../errors/AppError.js";
 import {createTask, deleteTask, fetchTasksByUserId, findTaskByIdAndUserId, updateTaskTitle} from "../repositories/user.task.repository.js";
-import {getFromCacheOrFetch, invalidateCache} from "./cache.js";
+import {getFromCacheOrFetch, invalidateCache} from "../lib/cache.js";
 
 function validateTitle(title: unknown): string {
   if (typeof title !== 'string' || !title.trim()) {
